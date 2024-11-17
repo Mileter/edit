@@ -1,0 +1,13 @@
+Mileter/edit
+Editing files with C++ and Curses.
+
+CONTRIBUTING
+To contribute, one needs the follow this agreement.
+
+1.  After you are done editing files, before they can be merged, contributers'
+    must run tools/indent_all.sh or tools/indent_all_wo.sh, unmodified.
+2.  Any changes to these the tools directory, such as adding tools, removing
+    tools, and changing tools, must be tested, and deemed to fit the source.
+	Only if these changes are accepted, can they be merged.
+3.  There should be no obvious issues when compiling, and rigouriously testing
+    the contributed program. 
