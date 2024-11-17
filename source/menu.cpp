@@ -216,9 +216,6 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 					display_floating_menu(floatingWin, fselection,
 										  COLOR_PAIR_SELECTED,
 										  fileSubmenuItems);
-					// display_floating_menu(WINDOW * window, int highlight,
-					// int pair_selected, std::vector < std::string >
-					// &contextItems)
 
 					keypad(floatingWin, true);
 					int prev = curs_set(0);
@@ -269,23 +266,25 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 								 "Something bad happened, and after closing this message, the program will quit.");
 						return false;
 					}
-					
-					#if HAVE_COLOR
-						if(console_color)
-							wbkgd(filediag, COLOR_PAIR(COLOR_PAIR_SELECTED);
-					#endif
-					
+
+#if HAVE_COLOR
+					if (console_color)
+						wbkgd(filediag, COLOR_PAIR(COLOR_PAIR_SELECTED));
+#endif
+
 					display_status
 						(" Press Enter to confirm. Press a letter to select drive letter.");
-					
+
 					std::string drive = FileDialog::getdrive(3, 3, false);
-					
+
+					display_status
+						(" Press Enter to confirm. Press Q to cancel. Press the UP and DOWN arrows to navigate.");
 					std::string tmp_filename =
-						FileDialog::open(filediag,
-										 drive);
-					
-					if(tmp_filename == "") return true; // Do nothing if canceled
-					
+						FileDialog::open(filediag, drive);
+
+					if (tmp_filename == "")
+						return true;	// Do nothing if canceled
+
 					try
 					{
 						readfile(tmp_filename, filebuf);
@@ -306,7 +305,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 				}
 				else if (fselection == 4)	// Save As
 				{
-					
+
 					return true;
 				}
 				else if (fselection == 5)	// Exit

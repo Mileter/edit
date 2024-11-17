@@ -43,21 +43,16 @@ WINDOW *textArea = NULL;		// initialize to NULL for safety
 WINDOW *menuBar = NULL;
 WINDOW *statusBar = NULL;
 
-void display_status(std::string message)
-{
-	int x = getmaxx(statusBar);	// max legnth
-
-	for (int i = 0; i < x && i < (int)message.size(); i++)
-	{
-		mvwaddch(statusBar, 0, i, message[i]);
-	}
-
-	wrefresh(statusBar);
-}
-
 // hidden overload
 void display_status(WINDOW * win, std::string message)
 {
+	werase(statusBar);
+
+#if HAVE_COLOR
+	if (console_color)
+		wbkgd(statusBar, COLOR_PAIR(COLOR_PAIR_MENU_BAR));
+#endif
+
 	int x = getmaxx(win);		// max legnth
 
 	for (int i = 0; i < x && i < (int)message.size(); i++)
@@ -66,6 +61,11 @@ void display_status(WINDOW * win, std::string message)
 	}
 
 	wrefresh(win);
+}
+
+void display_status(std::string message)
+{
+	display_status(statusBar, message);
 }
 
 void init_curs()
@@ -132,6 +132,7 @@ display_buffer(WINDOW * win, std::vector < std::string > buffer,
 	for (size_t y = offset_y; y < buffer.size() && y < offset_y + max_y; ++y)
 	{
 		// For each line in the window, print the corresponding portion of the 
+		// 
 		// 
 		// 
 		// 
@@ -329,6 +330,7 @@ bool mainloop()					// return false to quit
 		{
 			// show_err("Not implemented yet!",
 			// "Deleting newlines not implemented yet! Please wait for 1.0 for 
+			// 
 			// 
 			// 
 			// 

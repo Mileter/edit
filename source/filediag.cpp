@@ -40,6 +40,7 @@ namespace FileDialog
 
 	  std::string current_dir = ".";
 	  std::vector < FileData > files;
+
 	int current_selection = 0;
 	int start_row = 0;			// Start of the file list
 
@@ -76,6 +77,8 @@ namespace FileDialog
 			return "";			// Invalid state, cannot show files
 		}
 
+		start_row = 0;
+
 		while (true)
 		{
 			werase(win);
@@ -90,11 +93,19 @@ namespace FileDialog
 				WINDOW *errwin = newwin(4, 21, 1, 1);
 				if (errwin == NULL)
 					return "";
+
+#if HAVE_COLOR
+
+				if (console_color)
+					wbkgd(errwin, COLOR_PAIR(COLOR_PAIR_ERR));
+
+#endif
+
 				werase(errwin);
 				box(errwin, 0, 0);
 
 				mvwprintw(errwin, 0, 5, "Fatal Error");
-				mvwprintw(errwin, 1, 1, "NO FILES TO DISPLAY");
+				mvwprintw(errwin, 1, 1, "No files to display");
 				mvwprintw(errwin, 2, 1, "dir: %14s", current_dir.c_str());
 
 				wrefresh(errwin);
@@ -180,8 +191,8 @@ namespace FileDialog
 			case 27:			// Escape key (to navigate out of directory)
 				if (fs::exists(fs::path(current_dir).parent_path()))
 				{
-					navigate_to_dir(fs::path(current_dir).
-									parent_path().string());
+					navigate_to_dir(fs::path(current_dir).parent_path().
+									string());
 					start_row = 0;
 					current_selection = 0;
 				}

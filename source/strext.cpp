@@ -64,6 +64,7 @@ wrap_message(std::string message, size_t max_width,
 		// 
 		// 
 		// 
+		// 
 
 		// each 
 		// segment 
@@ -106,6 +107,7 @@ wrap_message(std::string message, size_t max_width,
 		// Add an empty line to represent the newline in the input message
 		wrapped_lines.push_back("");	// This ensures a blank line where the 
 										// 
+		// 
 		// 
 		// 
 		// 
