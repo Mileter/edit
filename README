@@ -1,0 +1,30 @@
+Mileter/edit
+Editing files with C++ and Curses.
+
+BUILDING
+Inside the "source/" directory, there should be a config header named 
+"config.h". Inside the config header, there are several options. Edit until all 
+the settings are set. Currently it is set to build on Windows with PDCurses.
+
+Inside the "tools/" directory, there are several scripts. There are several 
+options that should be dealt with, including with the compiler, linker, and 
+other important settings. Currently, it is set to build on Windows with MSYS2 
+and `mingw32-w64`. There are several variants of "build.sh". Here are the 
+differences:
+
+tools/build.sh
+- builds the editor
+
+tools/build_wo.sh
+- builds the editor
+- clears the screen before displaying output
+
+tools/build_and_run.sh
+- builds the editor
+- runs if build was successful
+
+An honarable mention is
+tools/run.sh
+- runs the first parameter
+
+Honestly, I am not sure why it was included.
