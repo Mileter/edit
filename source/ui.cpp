@@ -154,6 +154,7 @@ display_buffer(WINDOW * win, std::vector < std::string > buffer,
 		// 
 		// 
 		// 
+		// 
 		// buffer
 		std::string line = buffer[y];
 		for (size_t x = offset_x; x < line.size() && x < offset_x + max_x; ++x)
@@ -330,6 +331,7 @@ bool mainloop()					// return false to quit
 		{
 			// show_err("Not implemented yet!",
 			// "Deleting newlines not implemented yet! Please wait for 1.0 for 
+			// 
 			// 
 			// 
 			// 

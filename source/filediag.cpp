@@ -191,8 +191,8 @@ namespace FileDialog
 			case 27:			// Escape key (to navigate out of directory)
 				if (fs::exists(fs::path(current_dir).parent_path()))
 				{
-					navigate_to_dir(fs::path(current_dir).parent_path().
-									string());
+					navigate_to_dir(fs::path(current_dir).
+									parent_path().string());
 					start_row = 0;
 					current_selection = 0;
 				}

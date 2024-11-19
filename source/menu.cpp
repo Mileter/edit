@@ -278,7 +278,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 					std::string drive = FileDialog::getdrive(3, 3, false);
 
 					display_status
-						(" Press Enter to confirm. Press Q to cancel. Press the UP and DOWN arrows to navigate.");
+						(" Press Enter to confirm. Press Q to cancel. Press the UP and DOWN arrows to navigate. Press Escape to naviage to a parent directory.");
 					std::string tmp_filename =
 						FileDialog::open(filediag, drive);
 
@@ -301,6 +301,8 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 				}
 				else if (fselection == 3)	// Save
 				{
+					show_err("Not implemented yet",
+							 "The module required for this function to work has not been implemented yet. \n\nThus this module is unuseable, making for a quite dumb editor.");
 					return true;
 				}
 				else if (fselection == 4)	// Save As
