@@ -219,9 +219,9 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 
 					keypad(floatingWin, true);
 					int prev = curs_set(0);
-
 					int ch = wgetch(floatingWin);
-
+					curs_set(prev);
+					
 					if (ch == ERR)
 					{
 						show_err("Unexpected ERR Recieved",
@@ -278,7 +278,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 					std::string drive = FileDialog::getdrive(3, 3, false);
 
 					display_status
-						(" Press Enter to confirm. Press Q to cancel. Press the UP and DOWN arrows to navigate. Press Escape to naviage to a parent directory.");
+						(" ENTER -> confirm; Q -> cancel; UP, DOWN -> navigation; ESC -> Parent directory");
 					std::string tmp_filename =
 						FileDialog::open(filediag, drive);
 
@@ -301,13 +301,27 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 				}
 				else if (fselection == 3)	// Save
 				{
-					show_err("Not implemented yet",
-							 "The module required for this function to work has not been implemented yet. \n\nThus this module is unuseable, making for a quite dumb editor.");
+					if(filename == "")
+					{
+						show_norm("Could not save", "Set a filename before saving using the Save As function.");
+						return true;
+					}
+					
+					try
+					{
+						writefile(filename, filebuf);
+					}
+					catch(const std::runtime_error & ex)
+					{
+						show_err("Error whilest reading file!", ex.what());
+					}
+					
 					return true;
 				}
 				else if (fselection == 4)	// Save As
 				{
-
+					show_err("Not implemented yet",
+							 "The module required for this function to work has not been implemented yet. \n\nThus this module is unuseable, making for a quite dumb editor.");
 					return true;
 				}
 				else if (fselection == 5)	// Exit
