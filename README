@@ -1,5 +1,10 @@
+
 Mileter/edit
 Editing files with C++ and Curses.
+
+TESTING
+Write the following sentence to test.
+The quick brown fox jumped over the lazy dog.
 
 BUILDING
 Inside the "source/" directory, there should be a config header named 

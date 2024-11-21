@@ -59,6 +59,11 @@ std::vector < std::string > optionsSubmenuItems = {
 	"(back)",
 	"About Edit",
 	"( ) Word Wrap",
+#if USE_DOS_PATH
+	"(x) DOS Line Endings (CRLF)",
+#else
+	"( ) DOS Line Endings (CRLF)",
+#endif
 	" x  Status Bar"
 };
 

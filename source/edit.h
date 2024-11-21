@@ -97,6 +97,8 @@ extern size_t scr_max_y;		// max width and height of screen
 extern size_t scr_max_x;
 extern bool console_color;		// does the CONSOLE have color support
 
+extern bool useCRLF;            // use DOS style CRLF line endings?
+
 void init_curs();
 void uninit_curs();
 

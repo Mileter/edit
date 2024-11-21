@@ -58,11 +58,16 @@ bool readfile(const std::string & file,	// IN
 }
 
 // Function to write a buffer to a file
-bool writefile(const std::string & file,	// IN
-			   const std::vector < std::string > &buffer)	// IN
+bool writefile(const std::string & file,	                // IN
+			   const std::vector < std::string > &buffer)   // IN
 {
-	std::ofstream outfile(file, std::ios::trunc);	// Open file and truncate
+	// useCRLF specifies whether to use the old DOS newline style, "\r\n",
+	// or the *NIX style, "\n". Because of this distinction, there should
+	// be a distinction.
+	
+	std::ofstream outfile(file, std::ios::trunc | std::ios::binary);	// Open file and truncate
 	// it if it exists
+	// Carridge returns are not auto inserted.
 
 	// Throw an exception if the file cannot be opened
 	if (!outfile.is_open())
@@ -71,10 +76,10 @@ bool writefile(const std::string & file,	// IN
 		return false;
 	}
 
-  for (const auto & line:buffer)
+    for (const auto & line:buffer)
 	{
-		std::string str = line.substr(0, line.size() - 2);
-		outfile << line << std::endl;
+		std::string str = line.substr(0, line.size() - 1);
+		outfile << str << (useCRLF ? "\r\n" : "\n");
 	}
 
 	// Throw an exception if there was an I/O error while writing

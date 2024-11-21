@@ -31,6 +31,12 @@
 std::vector < std::string > filebuf;
 std::string filename;			// filename path
 
+#if USE_DOS_PATH
+bool useCRLF = true;
+#else
+bool useCRLF = false;
+#endif
+
 int main(int argc, char **argv)
 {
 	init_curs();
