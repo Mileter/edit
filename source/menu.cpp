@@ -309,6 +309,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 					if(filename == "")
 					{
 						show_norm("Could not save", "Set a filename before saving using the Save As function.");
+						curs_set(prev);
 						return true;
 					}
 					
@@ -327,6 +328,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 				{
 					show_err("Not implemented yet",
 							 "The module required for this function to work has not been implemented yet. \n\nThus this module is unuseable, making for a quite dumb editor.");
+					curs_set(prev);
 					return true;
 				}
 				else if (fselection == 5)	// Exit
