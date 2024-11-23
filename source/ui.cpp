@@ -132,29 +132,6 @@ display_buffer(WINDOW * win, std::vector < std::string > buffer,
 	for (size_t y = offset_y; y < buffer.size() && y < offset_y + max_y; ++y)
 	{
 		// For each line in the window, print the corresponding portion of the 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
 		// buffer
 		std::string line = buffer[y];
 		for (size_t x = offset_x; x < line.size() && x < offset_x + max_x; ++x)
