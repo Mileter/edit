@@ -298,7 +298,10 @@ bool mainloop()					// return false to quit
 		cursor_x = 0;			// This can be changed later.
 		return true;
 	}
-	if (ch == 8 || ch == 127 || ch == '\a')
+	if (ch == 8 || ch == 127 || ch == 7
+	 || ch == CTRL('G') || ch == 263) // seems that the ^G is called when pressing BS
+					  // also seems that ch is set to 263 when that happens?
+					  // ncurses does not behave like pdcurses in this regard.
 	{
 		// Handle backspace logic
 		if (cursor_x > 0)
@@ -308,12 +311,14 @@ bool mainloop()					// return false to quit
 		}
 		else if (cursor_y > 0)	// Handle delete line
 		{
-			// show_err("Not implemented yet!",
-			// "Deleting newlines not implemented yet! Please wait for 1.0 for 
-			// this feature.");
-			filebuf[cursor_y - 1].insert(filebuf[cursor_y - 1].size() - 1,
-										 filebuf[cursor_y]);
+		        filebuf[cursor_y - 1].insert(filebuf[cursor_y - 1].size() - 1,
+			filebuf[cursor_y]);
 			filebuf.erase(filebuf.begin() + cursor_y);
+		}
+		else // not valid move
+		{
+			flash();
+			beep();
 		}
 		return true;
 	}
@@ -323,5 +328,6 @@ bool mainloop()					// return false to quit
 	std::string unctrl_ch = std::string(unctrl(ch));
 	filebuf[cursor_y].insert(cursor_x, unctrl_ch);
 	cursor_x += unctrl_ch.size();
+	std::cout << "PRESSED: " << ch << std::endl;
 	return true;
 }
