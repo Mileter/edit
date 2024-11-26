@@ -27,7 +27,7 @@
    in this Software without prior written authorization from Miles R. Chang. */
 
 // curses header location
-#include <curses.h>
+#include <ncurses/curses.h>
 // some other common curses library headers include
 // #include <ncurses.h>
 // #include <ncursesw.h>
