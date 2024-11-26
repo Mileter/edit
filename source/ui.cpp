@@ -227,7 +227,9 @@ bool mainloop()					// return false to quit
 	wrefresh(menuBar);
 	wrefresh(textArea);
 	wrefresh(statusBar);
+	
 
+	curs_set(1); // set on anyway.
 	int ch = mvwgetch(textArea, cursor_y - offset_y, cursor_x - offset_x);
 
 	if (ch == ERR)
@@ -296,7 +298,7 @@ bool mainloop()					// return false to quit
 		cursor_x = 0;			// This can be changed later.
 		return true;
 	}
-	if (ch == 8)
+	if (ch == 8 || ch == 127 || ch == '\a')
 	{
 		// Handle backspace logic
 		if (cursor_x > 0)
@@ -308,16 +310,6 @@ bool mainloop()					// return false to quit
 		{
 			// show_err("Not implemented yet!",
 			// "Deleting newlines not implemented yet! Please wait for 1.0 for 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
 			// this feature.");
 			filebuf[cursor_y - 1].insert(filebuf[cursor_y - 1].size() - 1,
 										 filebuf[cursor_y]);
