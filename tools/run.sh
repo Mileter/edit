@@ -6,4 +6,4 @@
 # no need to edit below this line
 
 echo run.sh
-start $1
+start ../edit
