@@ -9,9 +9,9 @@ outputparam="-o"
 clexe=g++
 
 # flags for the compiler (change as you will)
-cflags="" 
+cflags="$(pkgconf ncursesw --cflags)" 
 # flags for the linker (change as you will)
-lflags="-lpdcurses -static"
+lflags="$(pkgconf ncursesw --libs --static)"
 
 # no need to update anything bellow this line
 
