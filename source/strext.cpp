@@ -42,17 +42,26 @@ std::string trim(const std::string & str)
 // words and preserving newlines
 bool
 wrap_message(std::string message, size_t max_width,
-			 std::vector < std::string > &wrapped_lines)
+	     std::vector < std::string > &wrapped_lines)
 {
 	size_t start = 0;
 	size_t end = 0;
 
-	// Split the message by newline characters, processing one segment at a
+	// Split the message by newline characters, processing one segment at
+	// a
 	// time
 	while ((end = message.find('\n', start)) != std::string::npos)
 	{
 		std::string line_segment = message.substr(start, end - start);	// Extract 
-																		// 
+										// 
+		// 
+		// 
+		// 
+		// 
+		// 
+		// 
+		// 
+		// 
 		// 
 		// 
 		// 
@@ -78,23 +87,38 @@ wrap_message(std::string message, size_t max_width,
 		// Process the words in the current segment
 		while (line_stream >> word)
 		{
-			word = trim(word);	// Trim any leading/trailing spaces in words
+			word = trim(word);	// Trim any leading/trailing
+			// spaces in words
 
 			// Check if the word fits in the current line
 			if (current_line.empty())
 			{
-				current_line = word;	// First word in the line
+				current_line = word;	// First word in the
+				// line
 			}
-			else if (current_line.size() + 1 + word.size() <= max_width)
+			else if (current_line.size() + 1 + word.size() <=
+				 max_width)
 			{
-				current_line += " " + word;	// Add word with space to the line
+				current_line += " " + word;	// Add word
+				// with space
+				// to the line
 			}
 			else
 			{
-				wrapped_lines.push_back(current_line);	// Add the current
+				wrapped_lines.push_back(current_line);	// Add 
+									// 
+				// 
+				// 
+				// 
+				// 
+				// 
+				// 
+				// the 
+				// current
 				// line to wrapped
 				// lines
-				current_line = word;	// Start a new line with the current
+				current_line = word;	// Start a new line
+				// with the current
 				// word
 			}
 		}
@@ -105,9 +129,11 @@ wrap_message(std::string message, size_t max_width,
 			wrapped_lines.push_back(current_line);
 		}
 
-		// Add an empty line to represent the newline in the input message
-		wrapped_lines.push_back("");	// This ensures a blank line where the 
-										// 
+		// Add an empty line to represent the newline in the input
+		// message
+		wrapped_lines.push_back("");	// This ensures a blank line
+		// where the 
+		// 
 		// 
 		// 
 		// 
@@ -123,7 +149,8 @@ wrap_message(std::string message, size_t max_width,
 		// 
 		// '\n' was.
 
-		start = end + 1;		// Move to the next part of the message after
+		start = end + 1;	// Move to the next part of the
+		// message after
 		// the newline
 	}
 
@@ -137,23 +164,38 @@ wrap_message(std::string message, size_t max_width,
 
 		while (line_stream >> word)
 		{
-			word = trim(word);	// Trim any leading/trailing spaces in words
+			word = trim(word);	// Trim any leading/trailing
+			// spaces in words
 
 			// Check if the word fits in the current line
 			if (current_line.empty())
 			{
-				current_line = word;	// First word in the line
+				current_line = word;	// First word in the
+				// line
 			}
-			else if (current_line.size() + 1 + word.size() <= max_width)
+			else if (current_line.size() + 1 + word.size() <=
+				 max_width)
 			{
-				current_line += " " + word;	// Add word with space to the line
+				current_line += " " + word;	// Add word
+				// with space
+				// to the line
 			}
 			else
 			{
-				wrapped_lines.push_back(current_line);	// Add the current
+				wrapped_lines.push_back(current_line);	// Add 
+									// 
+				// 
+				// 
+				// 
+				// 
+				// 
+				// 
+				// the 
+				// current
 				// line to wrapped
 				// lines
-				current_line = word;	// Start a new line with the current
+				current_line = word;	// Start a new line
+				// with the current
 				// word
 			}
 		}

@@ -51,9 +51,9 @@
 
 // expect to handle std::runtime_error if there is a problem whilest reading
 bool readfile(const std::string & file,	// IN
-			  std::vector < std::string > &buffer);	// OUT
+	      std::vector < std::string > &buffer);	// OUT
 bool writefile(const std::string & file,	// IN
-			   const std::vector < std::string > &buffer);	// IN
+	       const std::vector < std::string > &buffer);	// IN
 
 // main.cpp
 extern std::vector < std::string > filebuf;
@@ -62,7 +62,7 @@ extern std::string filename;	// filename path
 // strext.cpp
 std::string trim(const std::string & str);
 bool wrap_message(std::string message, size_t max_width,
-				  std::vector < std::string > &wrapped_lines);
+		  std::vector < std::string > &wrapped_lines);
 
 // ui.cpp
 // auto assume HAVE_WIDE and HAVE_COLOR
@@ -93,26 +93,26 @@ bool wrap_message(std::string message, size_t max_width,
 #define COLOR_PAIR_MENU_PRESS 0x15
 #endif
 
-extern size_t scr_max_y;		// max width and height of screen
+extern size_t scr_max_y;	// max width and height of screen
 extern size_t scr_max_x;
-extern bool console_color;		// does the CONSOLE have color support
+extern bool console_color;	// does the CONSOLE have color support
 
-extern bool useCRLF;            // use DOS style CRLF line endings?
+extern bool useCRLF;		// use DOS style CRLF line endings?
 
 void init_curs();
 void uninit_curs();
 
-void extrnal_refresh_ui();		// refresh from external control
+void extrnal_refresh_ui();	// refresh from external control
 void display_status(std::string message);
 
-bool mainloop();				// mainloop; displays editor window
+bool mainloop();		// mainloop; displays editor window
 
 // menu.cpp
 // menu elements
 
 // Function to display menus
 bool menu_interact(WINDOW * host_menu, std::string extra_info,
-				   bool no_interact = false);
+		   bool no_interact = false);
 
 // diag.cpp
 // dialogs of that not of editing directly persay
@@ -131,11 +131,11 @@ namespace FileDialog
 	  std::string save(WINDOW * win, std::string dir = ".");
 	  std::string saveas(WINDOW * win, std::string dir = ".");
 	  std::string filepath(WINDOW * win, std::string dir =
-						   ".", std::string title =
-						   "Open file", std::string message = "", bool isSave =
-						   false);
+			       ".", std::string title =
+			       "Open file", std::string message =
+			       "", bool isSave = false);
 	  std::string getdrive_diag(WINDOW * win, bool instruction = true);
 	  std::string getdrive(int y = 1, int x = 1, bool instruction = true);
-}								// namespace FileDialog
+}				// namespace FileDialog
 
 #endif

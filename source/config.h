@@ -37,8 +37,8 @@
 #define USE_DOS_PATH 1
 
 // comment these out if autocheck is wanted (compiler abilities)
-#define HAVE_WIDE 1				// wide support
-#define HAVE_COLOR 1			// color support
+#define HAVE_WIDE 1		// wide support
+#define HAVE_COLOR 1		// color support
 
 // #define HAVE_CLIPBOARD 1 // clipboard support
 

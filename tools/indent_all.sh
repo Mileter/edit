@@ -1,10 +1,5 @@
 # Find all source/header files
-files=$(find ../source -type f \( -iname "*.cpp" -o -iname "*.c" -o -iname "*.h" -o -iname "*.hpp" \))
 
-# List of files (improved handling of spaces)
-printf "%s\n" $files
-
-# Run indent, passing the combined list of files
-indent -bap -bli0 -i4 -l79 -ncs -npcs -npsl -fca -lc79 -fc1 -ts4 $files
-
-printf '\a'
+find ../source -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" \) \
+  -exec printf "indent -bap -bli0 -i8 -l79 -ncs -npcs -npsl -fca -lc79 -fc1 -ts8 \"%s\"\n" {} \; \
+  -exec indent -bap -bli0 -i8 -l79 -ncs -npcs -npsl -fca -lc79 -fc1 -ts8 {} \;

@@ -43,8 +43,8 @@ bool show_fatal(const std::string & title, const std::string & message)
 
 	if (!errWindow)
 	{
-		std::cerr << "FATAL ERROR (fallback) - " << title << "\n" << message <<
-			"\n";
+		std::cerr << "FATAL ERROR (fallback) - " << title << "\n" <<
+			message << "\n";
 		return false;
 	}
 
@@ -63,27 +63,29 @@ bool show_fatal(const std::string & title, const std::string & message)
 #endif
 
 	mvwprintw(errWindow, 0, (scr_max_x - title.size() - 7) / 2,
-			  "FATAL ERROR: %s", title.c_str());
+		  "FATAL ERROR: %s", title.c_str());
 
-	size_t max_message_width = scr_max_x - 4;	// Considering the border (2
+	size_t max_message_width = scr_max_x - 4;	// Considering the
+	// border (2
 	// on each side)
 	std::vector < std::string > wrapped_lines;
 	wrap_message(message, max_message_width, wrapped_lines);
 
 	size_t total_lines = wrapped_lines.size();
-	size_t y_offset = 1;		// Start printing from the second row (after
+	size_t y_offset = 1;	// Start printing from the second row (after
 	// the title)
-	size_t view_offset = 0;		// Keeps track of the current scroll position
+	size_t view_offset = 0;	// Keeps track of the current scroll position
 
 	// Initial rendering of the wrapped message
-	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines; ++i)
+	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines;
+	     ++i)
 	{
 		mvwprintw(errWindow, i + y_offset, 1, "%s",
-				  wrapped_lines[i + view_offset].c_str());
+			  wrapped_lines[i + view_offset].c_str());
 	}
 
 	mvwprintw(errWindow, scr_max_y - 6, (scr_max_x - 73) / 2,
-			  "[R]isks understood, continue anyway, OR PRESS ANY OTHER KEY TO TERMINATE.");
+		  "[R]isks understood, continue anyway, OR PRESS ANY OTHER KEY TO TERMINATE.");
 
 	// Allow scrolling with up and down arrows
 	wrefresh(errWindow);
@@ -95,41 +97,43 @@ bool show_fatal(const std::string & title, const std::string & message)
 		if (ch == ERR);
 		else if (ch == KEY_UP && view_offset > 0)
 		{
-			--view_offset;		// Scroll up
+			--view_offset;	// Scroll up
 		}
-		else if (ch == KEY_DOWN && view_offset + (scr_max_y - 7) < total_lines)
+		else if (ch == KEY_DOWN
+			 && view_offset + (scr_max_y - 7) < total_lines)
 		{
-			++view_offset;		// Scroll down
+			++view_offset;	// Scroll down
 		}
 		else if (ch == KEY_UP || ch == KEY_LEFT || ch == KEY_DOWN
-				 || ch == KEY_LEFT)
+			 || ch == KEY_LEFT)
 			continue;
 		else if (std::tolower(ch) == 'r')
 			return false;
 		else
 		{
 			// Any non-arrow key closes the message box
-			break;				// Exit on any non-arrow key
+			break;	// Exit on any non-arrow key
 		}
 
 		// Re-render the window with the updated view_offset
 		werase(errWindow);
 		box(errWindow, 0, 0);
 		mvwprintw(errWindow, 0, (scr_max_x - title.size() - 7) / 2,
-				  "FATAL ERROR: %s", title.c_str());
-		for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines;
-			 ++i)
+			  "FATAL ERROR: %s", title.c_str());
+		for (size_t i = 0;
+		     i < scr_max_y - 7 && i + view_offset < total_lines; ++i)
 		{
 			mvwprintw(errWindow, i + y_offset, 1, "%s",
-					  wrapped_lines[i + view_offset].c_str());
+				  wrapped_lines[i + view_offset].c_str());
 		}
 
 		mvwprintw(errWindow, scr_max_y - 6, (scr_max_x - 73) / 2,
-				  "[R]isks understood, continue anyway, OR PRESS ANY OTHER KEY TO TERMINATE.");
-		wrefresh(errWindow);	// Refresh the window with updated content
+			  "[R]isks understood, continue anyway, OR PRESS ANY OTHER KEY TO TERMINATE.");
+		wrefresh(errWindow);	// Refresh the window with updated
+		// content
 	}
 
-	delwin(errWindow);			// Clean up
+	delwin(errWindow);	// Clean up
 	curs_set(prev);
 
 	return true;
@@ -144,7 +148,8 @@ bool show_err(const std::string & title, const std::string & message)
 
 	if (!errWindow)
 	{
-		std::cerr << "ERROR (fallback) - " << title << "\n" << message << "\n";
+		std::cerr << "ERROR (fallback) - " << title << "\n" << message
+			<< "\n";
 		return false;
 	}
 
@@ -162,28 +167,30 @@ bool show_err(const std::string & title, const std::string & message)
 	}
 #endif
 
-	mvwprintw(errWindow, 0, (scr_max_x - title.size() - 7) / 2, "ERROR: %s",
-			  title.c_str());
+	mvwprintw(errWindow, 0, (scr_max_x - title.size() - 7) / 2,
+		  "ERROR: %s", title.c_str());
 
-	size_t max_message_width = scr_max_x - 4;	// Considering the border (2
+	size_t max_message_width = scr_max_x - 4;	// Considering the
+	// border (2
 	// on each side)
 	std::vector < std::string > wrapped_lines;
 	wrap_message(message, max_message_width, wrapped_lines);
 
 	size_t total_lines = wrapped_lines.size();
-	size_t y_offset = 1;		// Start printing from the second row (after
+	size_t y_offset = 1;	// Start printing from the second row (after
 	// the title)
-	size_t view_offset = 0;		// Keeps track of the current scroll position
+	size_t view_offset = 0;	// Keeps track of the current scroll position
 
 	// Initial rendering of the wrapped message
-	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines; ++i)
+	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines;
+	     ++i)
 	{
 		mvwprintw(errWindow, i + y_offset, 1, "%s",
-				  wrapped_lines[i + view_offset].c_str());
+			  wrapped_lines[i + view_offset].c_str());
 	}
 
 	mvwprintw(errWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-			  "Press any key to close...");
+		  "Press any key to close...");
 
 	// Allow scrolling with up and down arrows
 	wrefresh(errWindow);
@@ -195,39 +202,41 @@ bool show_err(const std::string & title, const std::string & message)
 		if (ch == ERR);
 		else if (ch == KEY_UP && view_offset > 0)
 		{
-			--view_offset;		// Scroll up
+			--view_offset;	// Scroll up
 		}
-		else if (ch == KEY_DOWN && view_offset + (scr_max_y - 7) < total_lines)
+		else if (ch == KEY_DOWN
+			 && view_offset + (scr_max_y - 7) < total_lines)
 		{
-			++view_offset;		// Scroll down
+			++view_offset;	// Scroll down
 		}
 		else if (ch == KEY_UP || ch == KEY_LEFT || ch == KEY_DOWN
-				 || ch == KEY_LEFT)
+			 || ch == KEY_LEFT)
 			continue;
 		else
 		{
 			// Any non-arrow key closes the message box
-			break;				// Exit on any non-arrow key
+			break;	// Exit on any non-arrow key
 		}
 
 		// Re-render the window with the updated view_offset
 		werase(errWindow);
 		box(errWindow, 0, 0);
 		mvwprintw(errWindow, 0, (scr_max_x - title.size() - 7) / 2,
-				  "ERROR: %s", title.c_str());
-		for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines;
-			 ++i)
+			  "ERROR: %s", title.c_str());
+		for (size_t i = 0;
+		     i < scr_max_y - 7 && i + view_offset < total_lines; ++i)
 		{
 			mvwprintw(errWindow, i + y_offset, 1, "%s",
-					  wrapped_lines[i + view_offset].c_str());
+				  wrapped_lines[i + view_offset].c_str());
 		}
 
 		mvwprintw(errWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-				  "Press any key to close...");
-		wrefresh(errWindow);	// Refresh the window with updated content
+			  "Press any key to close...");
+		wrefresh(errWindow);	// Refresh the window with updated
+		// content
 	}
 
-	delwin(errWindow);			// Clean up
+	delwin(errWindow);	// Clean up
 	curs_set(prev);
 	return true;
 }
@@ -240,7 +249,8 @@ bool show_warn(const std::string & title, const std::string & message)
 
 	if (!warnWindow)
 	{
-		std::cerr << "ERROR (fallback) - " << title << "\n" << message << "\n";
+		std::cerr << "ERROR (fallback) - " << title << "\n" << message
+			<< "\n";
 		return false;
 	}
 
@@ -259,27 +269,29 @@ bool show_warn(const std::string & title, const std::string & message)
 #endif
 
 	mvwprintw(warnWindow, 0, (scr_max_x - title.size() - 9) / 2,
-			  "WARNING: %s", title.c_str());
+		  "WARNING: %s", title.c_str());
 
-	size_t max_message_width = scr_max_x - 4;	// Considering the border (2
+	size_t max_message_width = scr_max_x - 4;	// Considering the
+	// border (2
 	// on each side)
 	std::vector < std::string > wrapped_lines;
 	wrap_message(message, max_message_width, wrapped_lines);
 
 	size_t total_lines = wrapped_lines.size();
-	size_t y_offset = 1;		// Start printing from the second row (after
+	size_t y_offset = 1;	// Start printing from the second row (after
 	// the title)
-	size_t view_offset = 0;		// Keeps track of the current scroll position
+	size_t view_offset = 0;	// Keeps track of the current scroll position
 
 	// Initial rendering of the wrapped message
-	for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines; ++i)
+	for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines;
+	     ++i)
 	{
 		mvwprintw(warnWindow, i + y_offset, 1, "%s",
-				  wrapped_lines[i + view_offset].c_str());
+			  wrapped_lines[i + view_offset].c_str());
 	}
 
 	mvwprintw(warnWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-			  "Press any key to close...");
+		  "Press any key to close...");
 
 	// Allow scrolling with up and down arrows
 	wrefresh(warnWindow);
@@ -291,39 +303,41 @@ bool show_warn(const std::string & title, const std::string & message)
 		if (ch == ERR);
 		else if (ch == KEY_UP && view_offset > 0)
 		{
-			--view_offset;		// Scroll up
+			--view_offset;	// Scroll up
 		}
-		else if (ch == KEY_DOWN && view_offset + (scr_max_y - 7) < total_lines)
+		else if (ch == KEY_DOWN
+			 && view_offset + (scr_max_y - 7) < total_lines)
 		{
-			++view_offset;		// Scroll down
+			++view_offset;	// Scroll down
 		}
 		else if (ch == KEY_UP || ch == KEY_LEFT || ch == KEY_DOWN
-				 || ch == KEY_LEFT)
+			 || ch == KEY_LEFT)
 			continue;
 		else
 		{
 			// Any non-arrow key closes the message box
-			break;				// Exit on any non-arrow key
+			break;	// Exit on any non-arrow key
 		}
 
 		// Re-render the window with the updated view_offset
 		werase(warnWindow);
 		box(warnWindow, 0, 0);
 		mvwprintw(warnWindow, 0, (scr_max_x - title.size() - 9) / 2,
-				  "WARNING: %s", title.c_str());
-		for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines;
-			 ++i)
+			  "WARNING: %s", title.c_str());
+		for (size_t i = 0;
+		     i < scr_max_y - 7 && i + view_offset < total_lines; ++i)
 		{
 			mvwprintw(warnWindow, i + y_offset, 1, "%s",
-					  wrapped_lines[i + view_offset].c_str());
+				  wrapped_lines[i + view_offset].c_str());
 		}
 
 		mvwprintw(warnWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-				  "Press any key to close...");
-		wrefresh(warnWindow);	// Refresh the window with updated content
+			  "Press any key to close...");
+		wrefresh(warnWindow);	// Refresh the window with updated
+		// content
 	}
 
-	delwin(warnWindow);			// Clean up
+	delwin(warnWindow);	// Clean up
 	curs_set(prev);
 	return true;
 }
@@ -336,7 +350,8 @@ bool show_norm(const std::string & title, const std::string & message)
 
 	if (!normWindow)
 	{
-		std::cerr << "ERROR (fallback) - " << title << "\n" << message << "\n";
+		std::cerr << "ERROR (fallback) - " << title << "\n" << message
+			<< "\n";
 		return false;
 	}
 
@@ -355,27 +370,29 @@ bool show_norm(const std::string & title, const std::string & message)
 #endif
 
 	mvwprintw(normWindow, 0, (scr_max_x - title.size() - 1) / 2, "%s",
-			  title.c_str());
+		  title.c_str());
 
-	size_t max_message_width = scr_max_x - 4;	// Considering the border (2
+	size_t max_message_width = scr_max_x - 4;	// Considering the
+	// border (2
 	// on each side)
 	std::vector < std::string > wrapped_lines;
 	wrap_message(message, max_message_width, wrapped_lines);
 
 	size_t total_lines = wrapped_lines.size();
-	size_t y_offset = 1;		// Start printing from the second row (after
+	size_t y_offset = 1;	// Start printing from the second row (after
 	// the title)
-	size_t view_offset = 0;		// Keeps track of the current scroll position
+	size_t view_offset = 0;	// Keeps track of the current scroll position
 
 	// Initial rendering of the wrapped message
-	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines; ++i)
+	for (size_t i = 0; i < scr_max_y - 6 && i + view_offset < total_lines;
+	     ++i)
 	{
 		mvwprintw(normWindow, i + y_offset, 1, "%s",
-				  wrapped_lines[i + view_offset].c_str());
+			  wrapped_lines[i + view_offset].c_str());
 	}
 
 	mvwprintw(normWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-			  "Press any key to close...");
+		  "Press any key to close...");
 
 	// Allow scrolling with up and down arrows
 	wrefresh(normWindow);
@@ -387,39 +404,41 @@ bool show_norm(const std::string & title, const std::string & message)
 		if (ch == ERR);
 		else if (ch == KEY_UP && view_offset > 0)
 		{
-			--view_offset;		// Scroll up
+			--view_offset;	// Scroll up
 		}
-		else if (ch == KEY_DOWN && view_offset + (scr_max_y - 7) < total_lines)
+		else if (ch == KEY_DOWN
+			 && view_offset + (scr_max_y - 7) < total_lines)
 		{
-			++view_offset;		// Scroll down
+			++view_offset;	// Scroll down
 		}
 		else if (ch == KEY_UP || ch == KEY_LEFT || ch == KEY_DOWN
-				 || ch == KEY_LEFT)
+			 || ch == KEY_LEFT)
 			continue;
 		else
 		{
 			// Any non-arrow key closes the message box
-			break;				// Exit on any non-arrow key
+			break;	// Exit on any non-arrow key
 		}
 
 		// Re-render the window with the updated view_offset
 		werase(normWindow);
 		box(normWindow, 0, 0);
-		mvwprintw(normWindow, 0, (scr_max_x - title.size() - 1) / 2, "%s",
-				  title.c_str());
-		for (size_t i = 0; i < scr_max_y - 7 && i + view_offset < total_lines;
-			 ++i)
+		mvwprintw(normWindow, 0, (scr_max_x - title.size() - 1) / 2,
+			  "%s", title.c_str());
+		for (size_t i = 0;
+		     i < scr_max_y - 7 && i + view_offset < total_lines; ++i)
 		{
 			mvwprintw(normWindow, i + y_offset, 1, "%s",
-					  wrapped_lines[i + view_offset].c_str());
+				  wrapped_lines[i + view_offset].c_str());
 		}
 
 		mvwprintw(normWindow, scr_max_y - 6, (scr_max_x - 25) / 2,
-				  "Press any key to close...");
-		wrefresh(normWindow);	// Refresh the window with updated content
+			  "Press any key to close...");
+		wrefresh(normWindow);	// Refresh the window with updated
+		// content
 	}
 
-	delwin(normWindow);			// Clean up
+	delwin(normWindow);	// Clean up
 	curs_set(prev);
 	return true;
 }

@@ -1,14 +1,8 @@
-# Find all source/header files
-files=$(find ../source -type f \( -iname "*.cpp" -o -iname "*.c" -o -iname "*.h" -o -iname "*.hpp" \))
-
-# List of files (improved handling of spaces)
-printf "%s\n" $files
-
 # Run indent, passing the combined list of files
-indent -bap -bli0 -i4 -l79 -ncs -npcs -npsl -fca -lc79 -fc1 -ts4 $files
+./indent_all.sh
 
 # Remove old files that have ~ after them
-find ../source -type f \( -iname "*.cpp~" -o -iname "*.c~" -o -iname "*.h~" -o -iname "*.hpp~" \) -exec rm -f {} \;
+find ../source -type f \( -name "*.cpp~" -o -name "*.c~" -o -name "*.h~" -o -name "*.hpp~" \) -exec rm -f {} \; -exec printf "rm -f \"%s\"\n" {} \;
 
 # Optional bell sound
 printf '\a'

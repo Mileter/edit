@@ -35,11 +35,11 @@
 #define CTRL(x) ((x) & 0x1f)
 // KEY_F(n) is already defined
 
-size_t scr_max_y;				// max width and height of screen
+size_t scr_max_y;		// max width and height of screen
 size_t scr_max_x;
-bool console_color = false;		// does the CONSOLE have color support
+bool console_color = false;	// does the CONSOLE have color support
 
-WINDOW *textArea = NULL;		// initialize to NULL for safety
+WINDOW *textArea = NULL;	// initialize to NULL for safety
 WINDOW *menuBar = NULL;
 WINDOW *statusBar = NULL;
 
@@ -53,7 +53,7 @@ void display_status(WINDOW * win, std::string message)
 		wbkgd(statusBar, COLOR_PAIR(COLOR_PAIR_MENU_BAR));
 #endif
 
-	int x = getmaxx(win);		// max legnth
+	int x = getmaxx(win);	// max legnth
 
 	for (int i = 0; i < x && i < (int)message.size(); i++)
 	{
@@ -120,21 +120,25 @@ void init_curs()
 // Display the buffer
 void
 display_buffer(WINDOW * win, std::vector < std::string > buffer,
-			   size_t offset_x, size_t offset_y)
+	       size_t offset_x, size_t offset_y)
 {
 	// Get the size of the window
 	int max_y, max_x;
-	getmaxyx(win, max_y, max_x);	// max_y is the number of rows, max_x is
+	getmaxyx(win, max_y, max_x);	// max_y is the number of rows, max_x
+	// is
 	// the number of columns
 
 	// Loop through the buffer and display the content starting from the
 	// offset
-	for (size_t y = offset_y; y < buffer.size() && y < offset_y + max_y; ++y)
+	for (size_t y = offset_y; y < buffer.size() && y < offset_y + max_y;
+	     ++y)
 	{
-		// For each line in the window, print the corresponding portion of the 
+		// For each line in the window, print the corresponding
+		// portion of the 
 		// buffer
 		std::string line = buffer[y];
-		for (size_t x = offset_x; x < line.size() && x < offset_x + max_x; ++x)
+		for (size_t x = offset_x;
+		     x < line.size() && x < offset_x + max_x; ++x)
 		{
 			// Print each character
 			mvwaddch(win, y - offset_y, x - offset_x, line[x]);
@@ -163,7 +167,7 @@ size_t offset_y = 0;
 
 void extrnal_refresh_ui()
 {
-	refresh();					// refresh stdscr
+	refresh();		// refresh stdscr
 
 	werase(menuBar);
 	werase(textArea);
@@ -180,7 +184,7 @@ void extrnal_refresh_ui()
 	wrefresh(textArea);
 }
 
-bool mainloop()					// return false to quit
+bool mainloop()			// return false to quit
 {
 	int max_y, max_x;
 	getmaxyx(textArea, max_y, max_x);
@@ -217,10 +221,10 @@ bool mainloop()					// return false to quit
 
 	display_buffer(textArea, filebuf, offset_x, offset_y);
 	display_status(statusBar,
-				   (std::string) " Ln " + std::to_string(cursor_y + 1) +
-				   ", Col " + std::to_string(cursor_x + 1) + " | lines: " +
-				   std::to_string(filebuf.size()) +
-				   " | Press ESC to access to menu bar.");
+		       (std::string) " Ln " + std::to_string(cursor_y + 1) +
+		       ", Col " + std::to_string(cursor_x + 1) + " | lines: " +
+		       std::to_string(filebuf.size()) +
+		       " | Press ESC to access to menu bar.");
 
 	keypad(textArea, true);
 
@@ -233,18 +237,19 @@ bool mainloop()					// return false to quit
 	if (ch == ERR)
 	{
 		return !show_fatal("ERR received as an input",
-						   "FATAL ERROR. The program will exit, once this box is closed.\n\n\
+				   "FATAL ERROR. The program will exit, once this box is closed.\n\n\
 		The input ERR was unexpectedly recieved. \
 		THIS CONDITION WILL RESET THE CURSOR TO (0, 0).");
 		cursor_x = 0;
 		cursor_y = 0;
 	}
 
-	if (ch == 27)				// for now, until menu bar implemented, quit
+	if (ch == 27)		// for now, until menu bar implemented, quit
 		// test build
 	{
 		// show_norm("Not implemented yet!", 
-		// "Menu bar is not implemented yet. For now, it just closes the
+		// "Menu bar is not implemented yet. For now, it just closes
+		// the
 		// program directly.");
 		return menu_interact(menuBar, filename);
 	}
@@ -284,16 +289,16 @@ bool mainloop()					// return false to quit
 	}
 	if (ch == '\r')
 	{
-		ch = '\n';				// handle as newline, because Carridge Return
+		ch = '\n';	// handle as newline, because Carridge Return
 		// by itself is illegal.
 	}
-	if (ch == '\n')				// Enter key (newline)
+	if (ch == '\n')		// Enter key (newline)
 	{
 		// Handle newline
 		filebuf.insert(filebuf.begin() + cursor_y + 1, " ");
 
 		cursor_y++;
-		cursor_x = 0;			// This can be changed later.
+		cursor_x = 0;	// This can be changed later.
 		return true;
 	}
 	if (ch == 8)
@@ -307,7 +312,15 @@ bool mainloop()					// return false to quit
 		else if (cursor_y > 0)	// Handle delete line
 		{
 			// show_err("Not implemented yet!",
-			// "Deleting newlines not implemented yet! Please wait for 1.0 for 
+			// "Deleting newlines not implemented yet! Please wait 
+			// 
+			// 
+			// 
+			// 
+			// 
+			// 
+			// 
+			// for 1.0 for 
 			// 
 			// 
 			// 
@@ -319,8 +332,9 @@ bool mainloop()					// return false to quit
 			// 
 			// 
 			// this feature.");
-			filebuf[cursor_y - 1].insert(filebuf[cursor_y - 1].size() - 1,
-										 filebuf[cursor_y]);
+			filebuf[cursor_y -
+				1].insert(filebuf[cursor_y - 1].size() - 1,
+					  filebuf[cursor_y]);
 			filebuf.erase(filebuf.begin() + cursor_y);
 		}
 		return true;

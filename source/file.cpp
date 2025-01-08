@@ -30,14 +30,15 @@
 
 // Function to read a file and store its contents in a buffer
 bool readfile(const std::string & file,	// IN
-			  std::vector < std::string > &buffer)	// OUT
+	      std::vector < std::string > &buffer)	// OUT
 {
 	std::ifstream infile(file);
 
 	// Throw an exception if the file cannot be opened
 	if (!infile.is_open())
 	{
-		throw std::runtime_error("Could not open file for reading: " + file);
+		throw std::runtime_error("Could not open file for reading: " +
+					 file);
 		return false;
 	}
 
@@ -48,8 +49,8 @@ bool readfile(const std::string & file,	// IN
 	// Throw an exception if there was an I/O error while reading
 	if (infile.bad())
 	{
-		throw std::runtime_error("I/O error occurred while reading the file: "
-								 + file);
+		throw std::runtime_error
+			("I/O error occurred while reading the file: " + file);
 		return false;
 	}
 
@@ -58,25 +59,36 @@ bool readfile(const std::string & file,	// IN
 }
 
 // Function to write a buffer to a file
-bool writefile(const std::string & file,	                // IN
-			   const std::vector < std::string > &buffer)   // IN
+bool writefile(const std::string & file,	// IN
+	       const std::vector < std::string > &buffer)	// IN
 {
 	// useCRLF specifies whether to use the old DOS newline style, "\r\n",
 	// or the *NIX style, "\n". Because of this distinction, there should
 	// be a distinction.
-	
-	std::ofstream outfile(file, std::ios::trunc | std::ios::binary);	// Open file and truncate
+
+	std::ofstream outfile(file, std::ios::trunc | std::ios::binary);	// Open 
+										// 
+	// 
+	// 
+	// 
+	// 
+	// 
+	// 
+	// file 
+	// and 
+	// truncate
 	// it if it exists
 	// Carridge returns are not auto inserted.
 
 	// Throw an exception if the file cannot be opened
 	if (!outfile.is_open())
 	{
-		throw std::runtime_error("Could not open file for writing: " + file);
+		throw std::runtime_error("Could not open file for writing: " +
+					 file);
 		return false;
 	}
 
-    for (const auto & line:buffer)
+      for (const auto & line:buffer)
 	{
 		std::string str = line.substr(0, line.size() - 1);
 		outfile << str << (useCRLF ? "\r\n" : "\n");
@@ -85,9 +97,9 @@ bool writefile(const std::string & file,	                // IN
 	// Throw an exception if there was an I/O error while writing
 	if (outfile.bad())
 	{
-		throw
-			std::runtime_error("I/O error occurred while writing to the file: "
-							   + file);
+		throw std::runtime_error
+			("I/O error occurred while writing to the file: " +
+			 file);
 		return false;
 	}
 
