@@ -30,6 +30,6 @@ tools/build_and_run.sh
 
 An honarable mention is
 tools/run.sh
-- runs the first parameter
+- runs the program if built
 
 Honestly, I am not sure why it was included.
