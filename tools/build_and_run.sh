@@ -31,7 +31,6 @@ source=$(find ../source -type f \( -iname "*.cpp" -o -iname "*.c" \))
 printf "%s\n" $source
 
 if $clexe $source $flags; then
-	echo run.sh
-	start $outputfile
+	./run.sh
 fi
 printf '\a'
