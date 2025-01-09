@@ -46,8 +46,7 @@ int main(int argc, char **argv)
 		try
 		{
 			filename = argv[1];
-			readfile(filename, filebuf);	// read into buffer at 
-			// first
+			readfile(filename, filebuf);	// read into buffer at first
 		}
 		catch(const std::runtime_error & ex)
 		{

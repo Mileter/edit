@@ -51,21 +51,18 @@ namespace FileDialog
 		files.clear();
 		if (fs::exists(current_dir) && fs::is_directory(current_dir))
 		{
-		      for (const auto & entry:fs::directory_iterator
-			     (current_dir))
+		      for (const auto & entry:fs::directory_iterator(current_dir))
 			{
 				FileData file_data;
 				file_data.path = entry.path().string();
-				file_data.is_directory =
-					fs::is_directory(entry);
+				file_data.is_directory = fs::is_directory(entry);
 				files.push_back(file_data);
 			}
 		}
 	}
 
 	// Function to display the file dialog and handle navigation
-	std::string file_dialog(WINDOW * win, const std::string & title,
-				const std::string & message, bool isSave)
+	std::string file_dialog(WINDOW * win, const std::string & title, const std::string & message, bool isSave)
 	{
 		int rows, cols;
 		getmaxyx(win, rows, cols);
@@ -73,6 +70,8 @@ namespace FileDialog
 		// Ensure that we can show at least one file
 		int max_visible_files = rows - 3;	// 2 for the title and 
 							// 
+		// 
+		// 
 		// 
 		// 
 		// 
@@ -94,8 +93,7 @@ namespace FileDialog
 			keypad(win, true);
 			box(win, 0, 0);
 
-			mvwprintw(win, 0, (cols - title.size()) / 2,
-				  title.c_str());
+			mvwprintw(win, 0, (cols - title.size()) / 2, title.c_str());
 			mvwprintw(win, 1, 1, message.c_str());
 
 			if (files.size() == 0)
@@ -107,8 +105,7 @@ namespace FileDialog
 #if HAVE_COLOR
 
 				if (console_color)
-					wbkgd(errwin,
-					      COLOR_PAIR(COLOR_PAIR_ERR));
+					wbkgd(errwin, COLOR_PAIR(COLOR_PAIR_ERR));
 
 #endif
 
@@ -117,8 +114,7 @@ namespace FileDialog
 
 				mvwprintw(errwin, 0, 5, "Fatal Error");
 				mvwprintw(errwin, 1, 1, "No files to display");
-				mvwprintw(errwin, 2, 1, "dir: %14s",
-					  current_dir.c_str());
+				mvwprintw(errwin, 2, 1, "dir: %14s", current_dir.c_str());
 
 				wrefresh(errwin);
 
@@ -132,28 +128,22 @@ namespace FileDialog
 
 			// Display the files in the window with scrolling
 			for (int i = start_row;
-			     i < std::min(start_row + max_visible_files,
-					  static_cast < int >(files.size()));
-			     ++i)
+			     i < std::min(start_row + max_visible_files, static_cast < int >(files.size())); ++i)
 			{
 				bool is_selected = files[i].selected;
 				bool is_directory = files[i].is_directory;
 				std::string display =
-					(is_directory ? "DIR "
-					 : (is_selected ? "[x] " : "[ ] ")) +
-					files[i].path;
+					(is_directory ? "DIR " : (is_selected ? "[x] " : "[ ] ")) + files[i].path;
 
 				if (i == current_selection)
 				{
 					wattron(win, A_REVERSE);
-					mvwprintw(win, i - start_row + 2, 1,
-						  display.c_str());
+					mvwprintw(win, i - start_row + 2, 1, display.c_str());
 					wattroff(win, A_REVERSE);
 				}
 				else
 				{
-					mvwprintw(win, i - start_row + 2, 1,
-						  display.c_str());
+					mvwprintw(win, i - start_row + 2, 1, display.c_str());
 				}
 			}
 
@@ -177,8 +167,7 @@ namespace FileDialog
 				if (current_selection < (int)files.size() - 1)
 				{
 					++current_selection;
-					if (current_selection >=
-					    start_row + max_visible_files)
+					if (current_selection >= start_row + max_visible_files)
 					{
 						++start_row;
 					}
@@ -187,8 +176,7 @@ namespace FileDialog
 			case '\r':
 			case '\n':
 				{
-					FileData & selected =
-						files[current_selection];
+					FileData & selected = files[current_selection];
 
 					if (selected.is_directory)
 					{
@@ -209,13 +197,9 @@ namespace FileDialog
 			case 8:	// ascii backspace
 			case 27:	// Escape key (to navigate out of
 				// directory)
-				if (fs::exists
-				    (fs::path(current_dir).parent_path()))
+				if (fs::exists(fs::path(current_dir).parent_path()))
 				{
-					navigate_to_dir(fs::path
-							(current_dir).
-							parent_path().
-							string());
+					navigate_to_dir(fs::path(current_dir).parent_path().string());
 					start_row = 0;
 					current_selection = 0;
 				}
@@ -225,8 +209,7 @@ namespace FileDialog
 				// indicate
 				// cancellation
 			case ' ':	// Toggle selection on spacebar
-				files[current_selection].selected =
-					!files[current_selection].selected;
+				files[current_selection].selected = !files[current_selection].selected;
 				break;
 			default:
 				break;
@@ -237,35 +220,28 @@ namespace FileDialog
 	std::string open(WINDOW * win, std::string dir)
 	{
 		navigate_to_dir(dir);
-		return file_dialog(win, "Open File", "Select a file to open.",
-				   false);
+		return file_dialog(win, "Open File", "Select a file to open.", false);
 	}
 
 	std::string open_mult(WINDOW * win, std::string dir)
 	{
 		navigate_to_dir(dir);
-		return file_dialog(win, "Open Multiple Files",
-				   "Select files to open.", false);
+		return file_dialog(win, "Open Multiple Files", "Select files to open.", false);
 	}
 
 	std::string save(WINDOW * win, std::string dir)
 	{
 		navigate_to_dir(dir);
-		return file_dialog(win, "Save File",
-				   "Select a location to save the file.",
-				   true);
+		return file_dialog(win, "Save File", "Select a location to save the file.", true);
 	}
 
 	std::string saveas(WINDOW * win, std::string dir)
 	{
 		navigate_to_dir(dir);
-		return file_dialog(win, "Save As",
-				   "Select a location to save the file.",
-				   true);
+		return file_dialog(win, "Save As", "Select a location to save the file.", true);
 	}
 
-	std::string filepath(WINDOW * win, std::string dir, std::string title,
-			     std::string message, bool isSave)
+	std::string filepath(WINDOW * win, std::string dir, std::string title, std::string message, bool isSave)
 	{
 		navigate_to_dir(dir);
 		return file_dialog(win, title, message, isSave);
@@ -286,13 +262,9 @@ namespace FileDialog
 
 			if (instruction)
 			{
-				mvwprintw(win, 0, (max_x - 12) / 2,
-					  "Choose drive");
-				mvwprintw(win, 1, 1,
-					  "Press a letter corresponding to a drive to select it.");
-				mvwprintw(win, 2, 1,
-					  "Press Enter to confirm. %c:",
-					  drive_letter);
+				mvwprintw(win, 0, (max_x - 12) / 2, "Choose drive");
+				mvwprintw(win, 1, 1, "Press a letter corresponding to a drive to select it.");
+				mvwprintw(win, 2, 1, "Press Enter to confirm. %c:", drive_letter);
 			}
 			else
 			{
@@ -322,9 +294,8 @@ namespace FileDialog
 
 	std::string getdrive(int y, int x, bool instruction)
 	{
-		WINDOW *win =
-			newwin((instruction ? 4 : 3), (instruction ? 55 : 4),
-			       y, x);
+		WINDOW *win = newwin((instruction ? 4 : 3), (instruction ? 55 : 4),
+				     y, x);
 		if (win == NULL)
 			return "/";
 		std::string drv = getdrive_diag(win, instruction);

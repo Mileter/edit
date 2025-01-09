@@ -118,32 +118,28 @@ void init_curs()
 }
 
 // Display the buffer
-void
-display_buffer(WINDOW * win, std::string & buffer,
-	       size_t offset_x, size_t offset_y)
+void display_buffer(WINDOW * win, std::string & buffer, size_t offset_x, size_t offset_y)
 {
 	// Get the size of the window
 	int max_y, max_x;
 	getmaxyx(win, max_y, max_x);	// max_y is the number of rows, max_x
 	// is
 	// the number of columns
-	
-	std::vector<std::string> split_buf;
-	
+
+	std::vector < std::string > split_buf;
+
 	extractLinesFromBuf(split_buf, buffer, offset_y, scr_max_y);
-	
-	
+
+
 	// Loop through the buffer and display the content starting from the
 	// offset
-	for (size_t y = offset_y; y < split_buf.size() && y < offset_y + max_y;
-	     ++y)
+	for (size_t y = offset_y; y < split_buf.size() && y < offset_y + max_y; ++y)
 	{
 		// For each line in the window, print the corresponding
 		// portion of the 
 		// buffer
 		std::string line = split_buf[y];
-		for (size_t x = offset_x;
-		     x < line.size() && x < offset_x + max_x; ++x)
+		for (size_t x = offset_x; x < line.size() && x < offset_x + max_x; ++x)
 		{
 			// Print each character
 			mvwaddch(win, y - offset_y, x - offset_x, line[x]);
@@ -178,8 +174,6 @@ void extrnal_refresh_ui()
 	werase(textArea);
 
 	menu_interact(menuBar, filename, true);
-	// void display_menu(WINDOW *win, std::vector<std::string> menu_items,
-	// size_t highlight, int pair_normal, int pair_selected)
 
 	display_buffer(textArea, filebuf, offset_x, offset_y);
 
@@ -221,9 +215,7 @@ bool mainloop()			// return false to quit
 	werase(statusBar);
 
 	menu_interact(menuBar, filename, true);
-	// void display_menu(WINDOW *win, std::vector<std::string> menu_items,
-	// size_t highlight, int pair_normal, int pair_selected)
-	
+
 	try
 	{
 		display_buffer(textArea, filebuf, offset_x, offset_y);
@@ -235,18 +227,17 @@ bool mainloop()			// return false to quit
 	}
 	display_status(statusBar,
 		       (std::string) " Ln " + std::to_string(cursor_y + 1) +
-		       ", Col " + std::to_string(cursor_x + 1) + " | length: " +
-		       std::to_string(filebuf.size()) +
-		       " | Press ESC to access to menu bar.");
+		       ", Col " + std::to_string(cursor_x + 1) +
+		       " | length: " + std::to_string(filebuf.size()) + " | Press ESC to access to menu bar.");
 
 	keypad(textArea, true);
 
 	wrefresh(menuBar);
 	wrefresh(textArea);
 	wrefresh(statusBar);
-	
 
-	curs_set(1); // set on anyway.
+
+	curs_set(1);		// set on anyway.
 	int ch = mvwgetch(textArea, cursor_y - offset_y, cursor_x - offset_x);
 
 	if (ch == ERR)
@@ -282,8 +273,9 @@ bool mainloop()			// return false to quit
 	{
 		cursor_y++;
 		std::string s;
-		bool res = extractSingleLineFromBuf(s, filebuf, cursor_y);
-		if(!res) // on no such line,
+		bool res = extractSingleLineFromBuf(s, filebuf, cursor_y + 1);
+		
+		if (!res)	// on no such line,
 			cursor_y--;
 		else if (cursor_x >= s.size() - 1)
 			cursor_x = s.size() - 1;
@@ -300,50 +292,47 @@ bool mainloop()			// return false to quit
 		std::string s;
 		extractSingleLineFromBuf(s, filebuf, cursor_y);
 		
-		if (cursor_x < s.size() - 1)
+		if (cursor_x < s.size())
 			cursor_x++;
 		return true;
 	}
 	if (ch == '\r')
 	{
-		ch = '\n';	// handle as newline... strictly for DOS line feed remainents in windows
+		ch = '\n';	// handle as newline... strictly for DOS line
+		// feed remainents in windows
 	}
 	if (ch == '\n')		// Enter key (newline)
 	{
 		// Handle newline
-		
-		if(useCRLF)
-		{
-			std::string::const_iterator iter = getNthDelimWithOffset(filebuf, cursor_y, 0);
-			filebuf.insert(iter, '\r');
-			filebuf.insert(iter, '\n');
-		}
+
+		if (useCRLF)
+			filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, 0), "\r\n");
 		else
-			filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, 0), '\n');
-		
+			filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, 0), "\n");
+
 		cursor_y++;
 		cursor_x = 0;	// This can be changed later.
 		return true;
 	}
-	if (ch == 8 || ch == 127 || ch == 7
-	 || ch == CTRL('G') || ch == 263) // seems that the ^G is called when pressing BS
-					  // also seems that ch is set to 263 when that happens?
-					  // ncurses does not behave like pdcurses in this regard.
+	if (ch == 8 || ch == 127 || ch == 7 || ch == CTRL('G') || ch == 263)
+		// seems that  the  ^G  is  called  when pressing BS
+		// also seems that ch is set to 263 when that happens?
+		// ncurses does not behave like pdcurses in this regard.
 	{
 		try
 		{
 			// Handle backspace logic
 			if (cursor_x > 0)
 			{
-				filebuf.erase(getNthDelimWithOffset(filebuf, cursor_y, cursor_x));
+				filebuf.erase(filebuf.begin() + getNthDelimWithOffset(filebuf, cursor_y, cursor_x) - 1);
 				cursor_x--;
 			}
 			else if (cursor_y > 0)	// Handle delete line
 			{
-				filebuf.erase(getNthDelimWithOffset(filebuf, cursor_y, 0));
+				filebuf.erase(filebuf.begin() + getNthDelimWithOffset(filebuf, cursor_y, 0));
 				cursor_y--;
 			}
-			else // not valid move
+			else	// not valid move
 			{
 				flash();
 				beep();
@@ -351,7 +340,9 @@ bool mainloop()			// return false to quit
 		}
 		catch(std::runtime_error & r)
 		{
-			show_fatal("An unexpected error occured while trying to handle event \"backspace\"", "Please report the issue to the issue tracker.\nDETAILS:\n" + (std::string)r.what());
+			show_fatal
+				("An unexpected error occured while trying to handle event \"backspace\"",
+				 "Please report the issue to the issue tracker.\nDETAILS:\n" + (std::string) r.what());
 		}
 		return true;
 	}
@@ -361,14 +352,16 @@ bool mainloop()			// return false to quit
 	std::string unctrl_ch = std::string(unctrl(ch));
 	try
 	{
-		filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, cursor_x), unctrl_ch.begin(), unctrl_ch.end());
+		filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, cursor_x), unctrl_ch);
 	}
 	catch(std::runtime_error & ex)
 	{
-		show_fatal("Unexpected error occured whilest trying to handle keyboard interupt.", (std::string)ex.what());
+		show_fatal
+			("Unexpected error occured whilest trying to handle keyboard interupt.",
+			 (std::string) ex.what());
 		return false;
 	}
-	
+
 	cursor_x += unctrl_ch.size();
 	return true;
 }

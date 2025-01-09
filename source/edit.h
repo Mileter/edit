@@ -51,12 +51,13 @@
 
 // expect to handle std::runtime_error if there is a problem whilest reading
 bool readfile(const std::string & file,	// IN
-	      std::string &buffer);	// OUT
+	      std::string & buffer);	// OUT
 bool writefile(const std::string & file,	// IN
-	       const std::string &buffer);	// IN
-std::string::iterator getNthDelimWithOffset(std::string &buffer, size_t n, size_t offset, char delim = '\n');
-bool extractSingleLineFromBuf(std::string & result, std::string &buffer, size_t startLine, char delim = '\n');
-bool extractLinesFromBuf(std::vector<std::string> & result, std::string &buffer, size_t startLine, size_t numLines, char delim = '\n');
+	       const std::string & buffer);	// IN
+size_t getNthDelimWithOffset(std::string & buffer, size_t n, size_t offset, char delim = '\n');
+bool extractSingleLineFromBuf(std::string & result, std::string & buffer, size_t startLine, char delim = '\n');
+bool extractLinesFromBuf(std::vector < std::string > &result,
+			 std::string & buffer, size_t startLine, size_t numLines, char delim = '\n');
 
 // main.cpp
 extern std::string filebuf;
@@ -64,8 +65,7 @@ extern std::string filename;	// filename path
 
 // strext.cpp
 std::string trim(const std::string & str);
-bool wrap_message(std::string message, size_t max_width,
-		  std::vector < std::string > &wrapped_lines);
+bool wrap_message(std::string message, size_t max_width, std::vector < std::string > &wrapped_lines);
 
 // ui.cpp
 // auto assume HAVE_WIDE and HAVE_COLOR
@@ -114,8 +114,7 @@ bool mainloop();		// mainloop; displays editor window
 // menu elements
 
 // Function to display menus
-bool menu_interact(WINDOW * host_menu, std::string extra_info,
-		   bool no_interact = false);
+bool menu_interact(WINDOW * host_menu, std::string extra_info, bool no_interact = false);
 
 // diag.cpp
 // dialogs of that not of editing directly persay
@@ -134,9 +133,7 @@ namespace FileDialog
 	  std::string save(WINDOW * win, std::string dir = ".");
 	  std::string saveas(WINDOW * win, std::string dir = ".");
 	  std::string filepath(WINDOW * win, std::string dir =
-			       ".", std::string title =
-			       "Open file", std::string message =
-			       "", bool isSave = false);
+			       ".", std::string title = "Open file", std::string message = "", bool isSave = false);
 	  std::string getdrive_diag(WINDOW * win, bool instruction = true);
 	  std::string getdrive(int y = 1, int x = 1, bool instruction = true);
 }				// namespace FileDialog

@@ -40,9 +40,7 @@ std::string trim(const std::string & str)
 
 // Function to wrap the message into lines based on max_width, splitting by
 // words and preserving newlines
-bool
-wrap_message(std::string message, size_t max_width,
-	     std::vector < std::string > &wrapped_lines)
+bool wrap_message(std::string message, size_t max_width, std::vector < std::string > &wrapped_lines)
 {
 	size_t start = 0;
 	size_t end = 0;
@@ -54,6 +52,8 @@ wrap_message(std::string message, size_t max_width,
 	{
 		std::string line_segment = message.substr(start, end - start);	// Extract 
 										// 
+		// 
+		// 
 		// 
 		// 
 		// 
@@ -96,8 +96,7 @@ wrap_message(std::string message, size_t max_width,
 				current_line = word;	// First word in the
 				// line
 			}
-			else if (current_line.size() + 1 + word.size() <=
-				 max_width)
+			else if (current_line.size() + 1 + word.size() <= max_width)
 			{
 				current_line += " " + word;	// Add word
 				// with space
@@ -107,6 +106,8 @@ wrap_message(std::string message, size_t max_width,
 			{
 				wrapped_lines.push_back(current_line);	// Add 
 									// 
+				// 
+				// 
 				// 
 				// 
 				// 
@@ -173,8 +174,7 @@ wrap_message(std::string message, size_t max_width,
 				current_line = word;	// First word in the
 				// line
 			}
-			else if (current_line.size() + 1 + word.size() <=
-				 max_width)
+			else if (current_line.size() + 1 + word.size() <= max_width)
 			{
 				current_line += " " + word;	// Add word
 				// with space
@@ -184,6 +184,8 @@ wrap_message(std::string message, size_t max_width,
 			{
 				wrapped_lines.push_back(current_line);	// Add 
 									// 
+				// 
+				// 
 				// 
 				// 
 				// 

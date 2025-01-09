@@ -68,9 +68,7 @@ std::vector < std::string > optionsSubmenuItems = {
 };
 
 // Function to display editing menu
-void display_menu(WINDOW * win,
-		  size_t highlight, int pair_selected,
-		  std::string extra_info = "")
+void display_menu(WINDOW * win, size_t highlight, int pair_selected, std::string extra_info = "")
 {
 	int x = getmaxx(win);	// max legnth
 
@@ -82,8 +80,7 @@ void display_menu(WINDOW * win,
 		if (i + 1 == highlight)
 		{
 			if (console_color)
-				wattron(win,
-					COLOR_PAIR(pair_selected) | A_BLINK);
+				wattron(win, COLOR_PAIR(pair_selected) | A_BLINK);
 			else
 				wattron(win, A_BLINK);
 		}
@@ -110,8 +107,7 @@ void display_menu(WINDOW * win,
 	wrefresh(win);
 }
 
-void display_floating_menu(WINDOW * window, int highlight, int pair_selected,
-			   std::vector < std::string > &contextItems)
+void display_floating_menu(WINDOW * window, int highlight, int pair_selected, std::vector < std::string > &contextItems)
 {
 	int max_y, max_x;
 	getmaxyx(window, max_y, max_x);
@@ -125,8 +121,7 @@ void display_floating_menu(WINDOW * window, int highlight, int pair_selected,
 		if (i + 1 == highlight)
 		{
 			if (console_color)
-				wattron(window,
-					COLOR_PAIR(pair_selected) | A_BLINK);
+				wattron(window, COLOR_PAIR(pair_selected) | A_BLINK);
 			else
 				wattron(window, A_BLINK);
 		}
@@ -141,8 +136,7 @@ void display_floating_menu(WINDOW * window, int highlight, int pair_selected,
 		if (i + 1 == highlight)
 		{
 			if (console_color)
-				wattroff(window,
-					 COLOR_PAIR(pair_selected) | A_BLINK);
+				wattroff(window, COLOR_PAIR(pair_selected) | A_BLINK);
 			else
 				wattroff(window, A_BLINK);
 		}
@@ -156,8 +150,7 @@ void display_floating_menu(WINDOW * window, int highlight, int pair_selected,
 	wrefresh(window);
 }
 
-bool menu_interact(WINDOW * host_menu, std::string extra_info,
-		   bool no_interact)
+bool menu_interact(WINDOW * host_menu, std::string extra_info, bool no_interact)
 {
 	display_menu(host_menu, 0, COLOR_PAIR_SELECTED, extra_info);
 	// void display_menu(WINDOW * win, size_t highlight, int pair_normal,
@@ -170,8 +163,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 		int prev = curs_set(0);
 		extrnal_refresh_ui();
 		werase(host_menu);
-		display_menu(host_menu, selection, COLOR_PAIR_SELECTED,
-			     extra_info);
+		display_menu(host_menu, selection, COLOR_PAIR_SELECTED, extra_info);
 		keypad(host_menu, true);
 		display_status
 			(" Press Enter to select a button. Press left and right to navigate. Press ESC to continue editing.");
@@ -207,14 +199,12 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 
 #if HAVE_COLOR
 				if (console_color)
-					wbkgd(floatingWin,
-					      COLOR_PAIR(COLOR_PAIR_MENU_BAR));
+					wbkgd(floatingWin, COLOR_PAIR(COLOR_PAIR_MENU_BAR));
 #endif
 
 				if (floatingWin == NULL)
 				{
-					show_err("Failed to open window.",
-						 "Will close the program, afterwards.");
+					show_err("Failed to open window.", "Will close the program, afterwards.");
 					return false;
 				}
 
@@ -223,9 +213,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 				while (!done)
 				{
 					display_floating_menu(floatingWin,
-							      fselection,
-							      COLOR_PAIR_SELECTED,
-							      fileSubmenuItems);
+							      fselection, COLOR_PAIR_SELECTED, fileSubmenuItems);
 
 					keypad(floatingWin, true);
 					int prev = curs_set(0);
@@ -234,7 +222,8 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 
 					if (ch == ERR)
 					{
-						show_err("Unexpected ERR Recieved", "Something bad happened, and after closing this message, the program will quit.");
+						show_err("Unexpected ERR Recieved",
+							 "Something bad happened, and after closing this message, the program will quit.");
 						fselection = 0;
 						done = true;
 					}
@@ -257,14 +246,15 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 							// 
 							// 
 							// 
+							// 
+							// 
 							// to
 							// 1
 							fselection--;
 					}
 					else if (ch == KEY_DOWN)
 					{
-						if (fselection <
-						    fileSubmenuItems.size())
+						if (fselection < fileSubmenuItems.size())
 							fselection++;
 					}
 				}
@@ -277,35 +267,29 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 					;	// do nothing
 				else if (fselection == 2)	// Open
 				{
-					WINDOW *filediag =
-						newwin(scr_max_y - 2,
-						       scr_max_x, 1, 0);
+					WINDOW *filediag = newwin(scr_max_y - 2,
+								  scr_max_x, 1, 0);
 
 					if (filediag == NULL)
 					{
-						show_err("Could not create window.", "Something bad happened, and after closing this message, the program will quit.");
+						show_err("Could not create window.",
+							 "Something bad happened, and after closing this message, the program will quit.");
 						return false;
 					}
 
 #if HAVE_COLOR
 					if (console_color)
-						wbkgd(filediag,
-						      COLOR_PAIR
-						      (COLOR_PAIR_SELECTED));
+						wbkgd(filediag, COLOR_PAIR(COLOR_PAIR_SELECTED));
 #endif
 
 					display_status
 						(" Press Enter to confirm. Press a letter to select drive letter.");
 
-					std::string drive =
-						FileDialog::getdrive(3, 3,
-								     false);
+					std::string drive = FileDialog::getdrive(3, 3, false);
 
 					display_status
 						(" ENTER -> confirm; Q -> cancel; UP, DOWN -> navigation; ESC -> Parent directory");
-					std::string tmp_filename =
-						FileDialog::open(filediag,
-								 drive);
+					std::string tmp_filename = FileDialog::open(filediag, drive);
 
 					if (tmp_filename == "")
 						return true;	// Do nothing
@@ -313,8 +297,7 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 
 					try
 					{
-						readfile(tmp_filename,
-							 filebuf);
+						readfile(tmp_filename, filebuf);
 						filename = tmp_filename;
 					}
 					catch(const std::runtime_error & ex)
@@ -380,7 +363,9 @@ bool menu_interact(WINDOW * host_menu, std::string extra_info,
 			}
 			else	// ERR
 			{
-				show_err("Got impossible selection/Unhandled event", "The selection of mode #" + std::to_string(selection) + " is not a valid selection. (1-4)\n\nThus it has been concluded that something went south, and thus, closure. After this selection will be reset to 1.");
+				show_err("Got impossible selection/Unhandled event",
+					 "The selection of mode #" + std::to_string(selection) +
+					 " is not a valid selection. (1-4)\n\nThus it has been concluded that something went south, and thus, closure. After this selection will be reset to 1.");
 				selection = 1;
 			}
 		}
