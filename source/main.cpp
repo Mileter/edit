@@ -28,7 +28,7 @@
 
 #include "edit.h"
 
-std::vector < std::string > filebuf;
+std::string filebuf = "";
 std::string filename;		// filename path
 
 #if USE_DOS_PATH
@@ -47,13 +47,6 @@ int main(int argc, char **argv)
 		{
 			filename = argv[1];
 			readfile(filename, filebuf);	// read into buffer at 
-							// 
-			// 
-			// 
-			// 
-			// 
-			// 
-			// 
 			// first
 		}
 		catch(const std::runtime_error & ex)
@@ -67,10 +60,9 @@ int main(int argc, char **argv)
 			  (std::string)
 			  "Miles R. Chang has not finished this program yet. Thus, please wait for 1.0 for a most stable release. Close this dialog, and know that this software is still is development.\n(MSG_NIGHTLY)\n\nBy continuing, you agree to the following license: \n\nMIT License\n\n"
 			  + (std::string) MIT_LICENSE);
-		filebuf = { " " };
 	}
 
-	while (mainloop() != false)
+	while (mainloop())
 	{
 		continue;
 	}

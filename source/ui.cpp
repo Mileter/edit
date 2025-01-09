@@ -119,7 +119,7 @@ void init_curs()
 
 // Display the buffer
 void
-display_buffer(WINDOW * win, std::vector < std::string > buffer,
+display_buffer(WINDOW * win, std::string & buffer,
 	       size_t offset_x, size_t offset_y)
 {
 	// Get the size of the window
@@ -127,16 +127,21 @@ display_buffer(WINDOW * win, std::vector < std::string > buffer,
 	getmaxyx(win, max_y, max_x);	// max_y is the number of rows, max_x
 	// is
 	// the number of columns
-
+	
+	std::vector<std::string> split_buf;
+	
+	extractLinesFromBuf(split_buf, buffer, offset_y, scr_max_y);
+	
+	
 	// Loop through the buffer and display the content starting from the
 	// offset
-	for (size_t y = offset_y; y < buffer.size() && y < offset_y + max_y;
+	for (size_t y = offset_y; y < split_buf.size() && y < offset_y + max_y;
 	     ++y)
 	{
 		// For each line in the window, print the corresponding
 		// portion of the 
 		// buffer
-		std::string line = buffer[y];
+		std::string line = split_buf[y];
 		for (size_t x = offset_x;
 		     x < line.size() && x < offset_x + max_x; ++x)
 		{
@@ -218,11 +223,19 @@ bool mainloop()			// return false to quit
 	menu_interact(menuBar, filename, true);
 	// void display_menu(WINDOW *win, std::vector<std::string> menu_items,
 	// size_t highlight, int pair_normal, int pair_selected)
-
-	display_buffer(textArea, filebuf, offset_x, offset_y);
+	
+	try
+	{
+		display_buffer(textArea, filebuf, offset_x, offset_y);
+	}
+	catch(std::runtime_error & r)
+	{
+		show_fatal("Failed to display buffer", r.what());
+		return false;
+	}
 	display_status(statusBar,
 		       (std::string) " Ln " + std::to_string(cursor_y + 1) +
-		       ", Col " + std::to_string(cursor_x + 1) + " | lines: " +
+		       ", Col " + std::to_string(cursor_x + 1) + " | length: " +
 		       std::to_string(filebuf.size()) +
 		       " | Press ESC to access to menu bar.");
 
@@ -249,10 +262,6 @@ bool mainloop()			// return false to quit
 	if (ch == 27)		// for now, until menu bar implemented, quit
 		// test build
 	{
-		// show_norm("Not implemented yet!", 
-		// "Menu bar is not implemented yet. For now, it just closes
-		// the
-		// program directly.");
 		return menu_interact(menuBar, filename);
 	}
 
@@ -262,19 +271,22 @@ bool mainloop()			// return false to quit
 		if (cursor_y > 0)
 		{
 			cursor_y--;
-			if (cursor_x >= filebuf[cursor_y].size() - 1)
-				cursor_x = filebuf[cursor_y].size() - 1;
+			std::string s;
+			extractSingleLineFromBuf(s, filebuf, cursor_y);
+			if (cursor_x >= s.size() - 1)
+				cursor_x = s.size() - 1;
 		}
 		return true;
 	}
 	if (ch == KEY_DOWN)
 	{
-		if (cursor_y < filebuf.size() - 1)
-		{
-			cursor_y++;
-			if (cursor_x >= filebuf[cursor_y].size() - 1)
-				cursor_x = filebuf[cursor_y].size() - 1;
-		}
+		cursor_y++;
+		std::string s;
+		bool res = extractSingleLineFromBuf(s, filebuf, cursor_y);
+		if(!res) // on no such line,
+			cursor_y--;
+		else if (cursor_x >= s.size() - 1)
+			cursor_x = s.size() - 1;
 		return true;
 	}
 	if (ch == KEY_LEFT)
@@ -285,20 +297,30 @@ bool mainloop()			// return false to quit
 	}
 	if (ch == KEY_RIGHT)
 	{
-		if (cursor_x < filebuf[cursor_y].size() - 1)
+		std::string s;
+		extractSingleLineFromBuf(s, filebuf, cursor_y);
+		
+		if (cursor_x < s.size() - 1)
 			cursor_x++;
 		return true;
 	}
 	if (ch == '\r')
 	{
-		ch = '\n';	// handle as newline, because Carridge Return
-		// by itself is illegal.
+		ch = '\n';	// handle as newline... strictly for DOS line feed remainents in windows
 	}
 	if (ch == '\n')		// Enter key (newline)
 	{
 		// Handle newline
-		filebuf.insert(filebuf.begin() + cursor_y + 1, " ");
-
+		
+		if(useCRLF)
+		{
+			std::string::const_iterator iter = getNthDelimWithOffset(filebuf, cursor_y, 0);
+			filebuf.insert(iter, '\r');
+			filebuf.insert(iter, '\n');
+		}
+		else
+			filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, 0), '\n');
+		
 		cursor_y++;
 		cursor_x = 0;	// This can be changed later.
 		return true;
@@ -308,27 +330,28 @@ bool mainloop()			// return false to quit
 					  // also seems that ch is set to 263 when that happens?
 					  // ncurses does not behave like pdcurses in this regard.
 	{
-		// Handle backspace logic
-		if (cursor_x > 0)
+		try
 		{
-			filebuf[cursor_y].erase(cursor_x - 1, 1);
-			cursor_x--;
+			// Handle backspace logic
+			if (cursor_x > 0)
+			{
+				filebuf.erase(getNthDelimWithOffset(filebuf, cursor_y, cursor_x));
+				cursor_x--;
+			}
+			else if (cursor_y > 0)	// Handle delete line
+			{
+				filebuf.erase(getNthDelimWithOffset(filebuf, cursor_y, 0));
+				cursor_y--;
+			}
+			else // not valid move
+			{
+				flash();
+				beep();
+			}
 		}
-		else if (cursor_y > 0)	// Handle delete line
+		catch(std::runtime_error & r)
 		{
-			// show_err("Not implemented yet!",
-			// "Deleting newlines not implemented yet! Please wait 
-			// for 1.0 for this feature.");
-			filebuf[cursor_y -
-				1].insert(filebuf[cursor_y - 1].size() - 1,
-					  filebuf[cursor_y]);
-		        filebuf[cursor_y - 1].insert(filebuf[cursor_y - 1].size() - 1,
-			filebuf[cursor_y]);
-		}
-		else // not valid move
-		{
-			flash();
-			beep();
+			show_fatal("An unexpected error occured while trying to handle event \"backspace\"", "Please report the issue to the issue tracker.\nDETAILS:\n" + (std::string)r.what());
 		}
 		return true;
 	}
@@ -336,8 +359,16 @@ bool mainloop()			// return false to quit
 	// otherwise
 	// Insert regular character input
 	std::string unctrl_ch = std::string(unctrl(ch));
-	filebuf[cursor_y].insert(cursor_x, unctrl_ch);
+	try
+	{
+		filebuf.insert(getNthDelimWithOffset(filebuf, cursor_y, cursor_x), unctrl_ch.begin(), unctrl_ch.end());
+	}
+	catch(std::runtime_error & ex)
+	{
+		show_fatal("Unexpected error occured whilest trying to handle keyboard interupt.", (std::string)ex.what());
+		return false;
+	}
+	
 	cursor_x += unctrl_ch.size();
-	std::cout << "PRESSED: " << ch << std::endl;
 	return true;
 }

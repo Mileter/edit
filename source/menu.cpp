@@ -74,8 +74,6 @@ void display_menu(WINDOW * win,
 {
 	int x = getmaxx(win);	// max legnth
 
-	whline(win, '-', x);
-
 	size_t offset_x = 2;
 
 	for (size_t i = 0; i < mainMenuItems.size(); i++)

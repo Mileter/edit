@@ -46,17 +46,20 @@
 #include <iostream>
 
 // file.cpp
-// honestly, pretty simple file operations
+// file and buffer operations
 #include <fstream>
 
 // expect to handle std::runtime_error if there is a problem whilest reading
 bool readfile(const std::string & file,	// IN
-	      std::vector < std::string > &buffer);	// OUT
+	      std::string &buffer);	// OUT
 bool writefile(const std::string & file,	// IN
-	       const std::vector < std::string > &buffer);	// IN
+	       const std::string &buffer);	// IN
+std::string::iterator getNthDelimWithOffset(std::string &buffer, size_t n, size_t offset, char delim = '\n');
+bool extractSingleLineFromBuf(std::string & result, std::string &buffer, size_t startLine, char delim = '\n');
+bool extractLinesFromBuf(std::vector<std::string> & result, std::string &buffer, size_t startLine, size_t numLines, char delim = '\n');
 
 // main.cpp
-extern std::vector < std::string > filebuf;
+extern std::string filebuf;
 extern std::string filename;	// filename path
 
 // strext.cpp
