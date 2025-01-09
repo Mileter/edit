@@ -28,81 +28,148 @@
 
 #include "edit.h"
 
+using namespace std;
+
 // Function to read a file and store its contents in a buffer
-bool readfile(const std::string & file,	// IN
-	      std::vector < std::string > &buffer)	// OUT
-{
-	std::ifstream infile(file);
+bool readfile(const std::string &file, std::string &buffer) {
+  std::ifstream infile(file);
+  
+  buffer = ""; // clear buffer
+  
+  // Throw an exception if the file cannot be opened
+  if (!infile.is_open()) {
+    throw std::runtime_error("An unknown error occured when trying to open file \"" + 
+    file+ "\".");
+    return false;
+  }
 
-	// Throw an exception if the file cannot be opened
-	if (!infile.is_open())
-	{
-		throw std::runtime_error("Could not open file for reading: " +
-					 file);
-		return false;
-	}
+  buffer.assign(std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>());
 
-	std::string line;
-	while (std::getline(infile, line))
-		buffer.push_back(line + " ");
+  // Check for I/O errors
+  if (infile.bad()) {
+    throw std::runtime_error("I/O error occurred while reading the file \"" +
+    file + "\".");
+    return false;
+  }
 
-	// Throw an exception if there was an I/O error while reading
-	if (infile.bad())
-	{
-		throw std::runtime_error
-			("I/O error occurred while reading the file: " + file);
-		return false;
-	}
-
-	infile.close();
-	return true;
+  return true;
 }
 
 // Function to write a buffer to a file
-bool writefile(const std::string & file,	// IN
-	       const std::vector < std::string > &buffer)	// IN
+bool writefile(const std::string &file, const std::string &buffer) {
+  std::ofstream outfile(file, std::ios::trunc | std::ios::binary);
+
+  // Throw an exception if the file cannot be opened
+  if (!outfile.is_open()) {
+    throw std::runtime_error("Could not open file for writing: " + file);
+    return false;
+  }
+
+  outfile.write(buffer.c_str(), buffer.size());
+  
+  // Check for I/O errors
+  if (outfile.bad()) {
+    throw std::runtime_error("I/O error occurred while writing to the file: " + file);
+    return false;
+  }
+
+  return true;
+}
+
+bool extractLinesFromBuf(vector<string> & result, std::string &buffer, size_t startLine, size_t numLines, char delim)
 {
-	// useCRLF specifies whether to use the old DOS newline style, "\r\n",
-	// or the *NIX style, "\n". Because of this distinction, there should
-	// be a distinction.
-
-	std::ofstream outfile(file, std::ios::trunc | std::ios::binary);	// Open 
-										// 
-	// 
-	// 
-	// 
-	// 
-	// 
-	// 
-	// file 
-	// and 
-	// truncate
-	// it if it exists
-	// Carridge returns are not auto inserted.
-
-	// Throw an exception if the file cannot be opened
-	if (!outfile.is_open())
+	if(startLine <= 0)
 	{
-		throw std::runtime_error("Could not open file for writing: " +
-					 file);
 		return false;
 	}
-
-      for (const auto & line:buffer)
+	if(numLines <= 0)
 	{
-		std::string str = line.substr(0, line.size() - 1);
-		outfile << str << (useCRLF ? "\r\n" : "\n");
-	}
-
-	// Throw an exception if there was an I/O error while writing
-	if (outfile.bad())
-	{
-		throw std::runtime_error
-			("I/O error occurred while writing to the file: " +
-			 file);
+		throw std::runtime_error("Attempted to extract non-positive line number.");
 		return false;
 	}
+	
+	size_t start = 0;
+	size_t currentLine = 1;
+	
+	while(currentLine < startLine)
+	{
+		start = buffer.find(delim, start);
+		if(start == string::npos)
+		{
+			return true; // out of bounds
+		}
+		
+		start++;         // move forward until meeting the specified offset
+		currentLine++;   // this operation might be a little slow, redoing
+	}                        // the above operations as many times, as many
+				 // as there is operations to go up and down a buffer.
+				 // this will be the initial one, after jumping to a
+				 // line, or opening a new file.
+	
+	for(size_t i = 0; i < numLines; i++)
+	{
+		size_t end = buffer.find(delim, start);
+		if(start == string::npos) break;
+		
+		if(end == string::npos)
+		{
+			result.push_back(buffer.substr(start)); // push rest of buf
+			break;
+		}
+		
+		result.push_back(buffer.substr(start, end - start));
+		start = end + 1;
+	}
+	
+	return true;
+}
 
-	outfile.close();
+
+std::string::iterator getNthDelimWithOffset(std::string &buffer, size_t n, size_t offset, char delim) {
+  auto it = buffer.begin();
+  size_t count = 0;
+  
+  if(n == 0)
+  {
+	  return it + offset;
+  }
+  
+  while (it != buffer.end()) {
+    if (*it == delim) {
+      ++count;
+      if (count == n) {
+        auto result = it + offset;
+        if (result >= buffer.end() || result < buffer.begin()) {
+          throw std::runtime_error("Offset goes out of bounds.");
+        }
+        return result;
+      }
+    }
+    ++it;
+  }
+
+  throw std::runtime_error("Delimiter not found enough times.");
+}
+
+bool extractSingleLineFromBuf(string & result, std::string &buffer, size_t startLine, char delim)
+{
+	vector<string> v;
+	try
+	{
+		extractLinesFromBuf(v, buffer, startLine, 1, delim);
+	}
+	catch(std::runtime_error & r)
+	{
+		buffer = "? RUNTIME ERROR";
+		throw r;
+		return false;
+	}
+	
+	if(v.size() < 1)
+	{
+		return false; // no such line exists
+	}
+	
+	buffer = v[0];
 	return true;
 }
